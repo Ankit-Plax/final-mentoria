@@ -96,7 +96,7 @@ const Mentoria = () => {
             <BookOpen className="w-8 h-8 text-white" />
           </div>
           <h1 className="text-4xl font-bold text-white mb-2">
-            Welcome to <span className="bg-gradient-to-r from-yellow-300 to-orange-300 bg-clip-text text-transparent">Mentoria</span>
+            Welcome to <span className="text-yellow-300">Mentoria</span>
           </h1>
           <p className="text-blue-100 text-lg">Your centralized academic hub</p>
         </div>
