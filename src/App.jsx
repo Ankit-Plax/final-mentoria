@@ -2,13 +2,14 @@ import React, { useState, useRef } from 'react';
 import { 
   BookOpen, Upload, MessageCircle, FileText, Search, 
   Share2, Download, User, Settings, Brain, Zap, Users, 
-  Trophy, Bell, Menu, X, Calendar, Clock, Tag, ThumbsUp, School, Eye
+  Trophy, Bell, Menu, X, Calendar, Clock, Tag, ThumbsUp, School, Eye,
+  GraduationCap, UserCheck
 } from 'lucide-react';
 
 const Mentoria = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [activeTab, setActiveTab] = useState('dashboard');
-  const [user] = useState({ name: 'Alex Chen', email: 'alex@student.edu', avatar: '👨‍🎓' });
+  const [user] = useState({ name: 'Ankit Nandy', email: 'ankit@student.edu', avatar: '👨‍🎓' });
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [chatMessages, setChatMessages] = useState([
     { type: 'ai', content: 'Hi! I\'m your AI study assistant. How can I help you today?' }
@@ -21,6 +22,9 @@ const Mentoria = () => {
   const [isUploading, setIsUploading] = useState(false);
   const [currentCard, setCurrentCard] = useState(0);
   const [showAnswer, setShowAnswer] = useState(false);
+  const [careerAdviceType, setCareerAdviceType] = useState(null);
+  const [careerMessages, setCareerMessages] = useState([]);
+  const [careerInput, setCareerInput] = useState('');
   const fileInputRef = useRef(null);
 
   const recentNotes = [
@@ -235,6 +239,7 @@ const Mentoria = () => {
             { id: 'papers', icon: Search, label: 'Past Papers' },
             { id: 'ai-chat', icon: MessageCircle, label: 'AI Assistant' },
             { id: 'study-tools', icon: Brain, label: 'Study Tools' },
+            { id: 'career-advice', icon: GraduationCap, label: 'Career Advice' },
             { id: 'collaboration', icon: Users, label: 'Collaborate' }
           ].map(item => (
             <button
@@ -580,6 +585,24 @@ const Mentoria = () => {
       </div>
     </div>
   );
+
+  const handleCareerSend = () => {
+    if (!careerInput.trim()) return;
+    
+    const userMessage = { type: 'user', content: careerInput };
+    setCareerMessages(prev => [...prev, userMessage]);
+    setCareerInput('');
+
+    setTimeout(() => {
+      let response = '';
+      if (careerAdviceType === 'ai') {
+        response = `AI Career Advisor: Based on your question "${careerInput}", I'd recommend exploring these career paths and developing skills in...`;
+      } else {
+        response = `Professional Advisor: As an industry expert, I suggest you consider the practical aspects of "${careerInput}" and connect with professionals in your field of interest...`;
+      }
+      setCareerMessages(prev => [...prev, { type: 'advisor', content: response }]);
+    }, 1000);
+  };
 
   const StudyTools = () => (
     <div className="space-y-6">
