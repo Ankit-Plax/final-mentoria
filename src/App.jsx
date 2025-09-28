@@ -247,6 +247,12 @@ const Mentoria = () => {
               onClick={() => {
                 setActiveTab(item.id);
                 setIsMobileMenuOpen(false);
+                // Reset career advice when navigating to career advice
+                if (item.id === 'career-advice') {
+                  setCareerAdviceType(null);
+                  setCareerMessages([]);
+                  setCareerInput('');
+                }
               }}
               className={`w-full flex items-center px-4 py-3 rounded-lg transition-colors ${
                 activeTab === item.id 
@@ -702,6 +708,132 @@ const Mentoria = () => {
     </div>
   );
 
+  const CareerAdvice = () => (
+    <div className="space-y-6">
+      {!careerAdviceType ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div 
+            onClick={() => {
+              setCareerAdviceType('ai');
+              setCareerMessages([{ type: 'advisor', content: 'Hi! I\'m your AI Career Advisor. I can help you explore career paths, skill requirements, and industry trends. What would you like to know?' }]);
+            }}
+            className="bg-white rounded-xl shadow-sm border border-gray-100 p-8 hover:shadow-md transition-all cursor-pointer group"
+          >
+            <div className="text-center">
+              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-blue-200 transition-colors">
+                <Brain className="w-8 h-8 text-blue-600" />
+              </div>
+              <h3 className="text-xl font-semibold text-gray-800 mb-2">AI Career Advisor</h3>
+              <p className="text-gray-600 mb-4">Get instant career guidance powered by AI</p>
+              <ul className="text-sm text-gray-500 text-left space-y-2">
+                <li>• Career path recommendations</li>
+                <li>• Skill gap analysis</li>
+                <li>• Industry trends & insights</li>
+                <li>• Resume & interview tips</li>
+              </ul>
+              <button className="mt-4 w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                Start AI Session
+              </button>
+            </div>
+          </div>
+
+          <div 
+            onClick={() => {
+              setCareerAdviceType('professional');
+              setCareerMessages([{ type: 'advisor', content: 'Welcome! I\'m a professional career counselor with 10+ years of industry experience. I can provide personalized advice based on real-world insights. How can I help you today?' }]);
+            }}
+            className="bg-white rounded-xl shadow-sm border border-gray-100 p-8 hover:shadow-md transition-all cursor-pointer group"
+          >
+            <div className="text-center">
+              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-green-200 transition-colors">
+                <UserCheck className="w-8 h-8 text-green-600" />
+              </div>
+              <h3 className="text-xl font-semibold text-gray-800 mb-2">Professional Advisor</h3>
+              <p className="text-gray-600 mb-4">Connect with industry professionals</p>
+              <ul className="text-sm text-gray-500 text-left space-y-2">
+                <li>• Personalized career counseling</li>
+                <li>• Industry insider knowledge</li>
+                <li>• Networking opportunities</li>
+                <li>• Real-world experience sharing</li>
+              </ul>
+              <button className="mt-4 w-full px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
+                Connect with Professional
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 h-96 flex flex-col">
+          <div className="p-4 border-b border-gray-200">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center">
+                {careerAdviceType === 'ai' ? (
+                  <>
+                    <Brain className="w-6 h-6 text-blue-600 mr-2" />
+                    <h3 className="font-semibold text-gray-800">AI Career Advisor</h3>
+                  </>
+                ) : (
+                  <>
+                    <UserCheck className="w-6 h-6 text-green-600 mr-2" />
+                    <h3 className="font-semibold text-gray-800">Professional Career Counselor</h3>
+                  </>
+                )}
+              </div>
+              <button 
+                onClick={() => {
+                  setCareerAdviceType(null);
+                  setCareerMessages([]);
+                }}
+                className="p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100"
+              >
+                <X size={16} />
+              </button>
+            </div>
+          </div>
+          
+          <div className="flex-1 overflow-y-auto p-4 space-y-4">
+            {careerMessages.map((message, index) => (
+              <div key={index} className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}>
+                <div className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
+                  message.type === 'user' 
+                  ? 'bg-blue-600 text-white' 
+                  : careerAdviceType === 'ai'
+                  ? 'bg-blue-50 text-blue-900 border border-blue-200'
+                  : 'bg-green-50 text-green-900 border border-green-200'
+                }`}>
+                  <pre className="whitespace-pre-wrap font-sans">{message.content}</pre>
+                </div>
+              </div>
+            ))}
+          </div>
+          
+          <div className="p-4 border-t border-gray-200">
+            <div className="flex space-x-2">
+              <input
+                type="text"
+                value={careerInput}
+                onChange={(e) => setCareerInput(e.target.value)}
+                onKeyPress={(e) => e.key === 'Enter' && handleCareerSend()}
+                placeholder="Ask about career paths, skills, industries..."
+                className="flex-1 px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              />
+              <button 
+                onClick={handleCareerSend}
+                className={`px-4 py-2 text-white rounded-lg transition-colors ${
+                  careerAdviceType === 'ai' 
+                  ? 'bg-blue-600 hover:bg-blue-700' 
+                  : 'bg-green-600 hover:bg-green-700'
+                }`}
+              >
+                Send
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+
   const Collaboration = () => (
     <div className="space-y-6">
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
@@ -757,6 +889,7 @@ const Mentoria = () => {
       case 'papers': return <PastPapers />;
       case 'ai-chat': return <AIChat />;
       case 'study-tools': return <StudyTools />;
+      case 'career-advice': return <CareerAdvice />;
       case 'collaboration': return <Collaboration />;
       default: return <Dashboard />;
     }
